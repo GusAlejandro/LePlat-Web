@@ -1,4 +1,4 @@
-.App {
+.mainSec {
     display: flex;
     width: 100%;
     max-width: 60%;
@@ -6,3 +6,10 @@
     justify-content: center;
     /* margin-top: 20%; */
 }
+
+
+.logoAndbuttons {
+    text-align: center;
+    font-style: Helvetica;
+}
+
