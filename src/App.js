@@ -20,6 +20,7 @@ class App extends Component {
     return (
       <div>
         <Container className='App'>
+          {/* need to add logic that checks if user is logged in, rendering either welcome or home */}
           <Welcome/>
         </Container>
       </div>

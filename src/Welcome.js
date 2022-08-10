@@ -1,12 +1,10 @@
-import Reat, {Component} from 'react';
+import React, {Component} from 'react';
 import './Welcome.css';
-import logo from './logo.jpg';
-import Image from 'react-bootstrap/Image';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Header from './Header';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 class Welcome extends Component {
@@ -19,14 +17,19 @@ class Welcome extends Component {
                 <Row>
                     <Header/>
                 </Row>
-                {/* <Image src={logo} width="354px" height="336px"/>
-                <h1>Le Plat</h1> */}
-               
-                <Row className='buttons'> 
-                    <Button variant="dark" size='lg'>Register</Button>
+                <Row className='buttons'>
+                    <Link to='/register'>
+                        <div className="d-grid gap-2"> 
+                        <Button variant="dark" size='lg'>Register</Button>
+                        </div>
+                    </Link>
                 </Row>
                 <Row className='buttons'>
-                    <Button variant="dark" size='lg'>Login</Button>
+                    <Link to='/login'>
+                        <div className="d-grid gap-2"> 
+                        <Button variant="dark" size='lg'>Login</Button>
+                        </div>
+                    </Link>
                 </Row>
             </div>
         );  
