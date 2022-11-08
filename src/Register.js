@@ -5,6 +5,8 @@ import Row from 'react-bootstrap/Row';
 import { Container } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import axios from "axios";
+import Alert from 'react-bootstrap/Alert';
+import { Link } from 'react-router-dom';
 
 // temp url http://127.0.0.1:5000
 
@@ -15,14 +17,32 @@ class Register extends Component {
         this.state = {
             username: '',
             password: '',
-            isSubmitting: false
+            isSubmitting: false,
+            showError: false,
+            showSuccess: false,
+            errorMessage: ''
         }
-        this.handleRegister = this.handleRegister.bind(this);
+        
         this.usernameRef = React.createRef();
         this.passwordRef = React.createRef();
-        
+
+        this.dismissError = this.dismissError.bind(this);
+        this.dismissSuccess = this.dismissSuccess.bind(this);
+        this.handleRegister = this.handleRegister.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
         this.handleUsername = this.handleUsername.bind(this);
+    }
+
+    dismissError () {
+        this.setState({
+            showError: false
+        })
+    }
+
+    dismissSuccess () {
+        this.setState({
+            showSuccess: false
+        })
     }
 
     logFields = () => {
@@ -46,22 +66,25 @@ class Register extends Component {
 
     handleRegister (event) {
         this.setState({
-            isSubmitting: true
+            isSubmitting: true,
+            showError: false,
+            showSuccess: false
         })
         let username = this.state.username;
         let password = this.state.password;
         axios.post(
-            'http://127.0.0.1:5000/register',
+            'http://192.168.1.204:5000/register',
             {'username': username, 'password': password},
         ).then((response) => {
             this.setState({
                 isSubmitting : false
             })
-            if (response.status == 200){
+            if (response.status === 200){
                 // succesful sign up
                 this.setState({
                     username: '',
-                    password: ''
+                    password: '',
+                    showSuccess: 'true'
                 })
             }
         }).catch((error) => {
@@ -70,14 +93,37 @@ class Register extends Component {
             })
             if (error.response) {
                 // server gives error, username taken error
+                if (error.response.status === 403) {
+                    console.log('username is taken');
+                    this.setState({
+                        errorMessage: 'Username is taken.',
+                        showError: true
+                    })
+                } else {
+                    console.log('connection error');
+                    this.setState({
+                        errorMessage: 'Connection or Server Error, try again.',
+                        showError: true
+                    })
+                }
             } else if (!error.response || error.request) {
                 // server or connecction error
+                console.log('uncaught error');
+                this.setState({
+                    errorMessage: 'Uncaught error, try again.',
+                    showError: true
+                })
             }
         })
         event.preventDefault();
     }
 
     render () {
+
+        const errorMessage = this.state.errorMessage;
+        const errorAlertStyle = this.state.showError ? {} : {display:'none'};
+        const successAlertStyle = this.state.showSuccess ? {} : {display: 'none'};
+
         return (
             <div className="logoAndbuttons">
                 <Container className="mainSec">
@@ -85,6 +131,8 @@ class Register extends Component {
                         <Header/>
                     </Row>
                     <Row>
+                        <Alert variant="success" dismissible="true" onClose={this.dismissSuccess} style={successAlertStyle}>Account created succesfully ! <Link to='/login'>Crete an account here.</Link></Alert>
+                        <Alert variant="danger" dismissible='true' onClose={this.dismissError} style={errorAlertStyle}>{errorMessage}</Alert>
                         <Form onSubmit={this.handleRegister}>
                             <Form.Group className="mb-3" controlId="formUsername">
                                 <Form.Label>Username</Form.Label>
